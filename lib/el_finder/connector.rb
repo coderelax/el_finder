@@ -11,7 +11,7 @@ module ElFinder
 
     # Valid commands to run.
     # @see #run
-    VALID_COMMANDS = %w[archive duplicate edit extract mkdir mkfile open paste ping read rename resize rm tmb upload]
+    VALID_COMMANDS = %w[archive duplicate edit extract mkdir mkfile open paste ping read rename resize rm tmb upload file]
 
     # Default options for instances.
     # @see #initialize
@@ -139,8 +139,10 @@ module ElFinder
         return
       end
 
+      # TODO: Test to see how this change will behave under different circumstances
       if target.file?
-        command_not_implemented
+        @response[:target_path] = target.path.to_s
+        # command_not_implemented
       elsif target.directory?
         @response[:cwd] = cwd_for(target)
         @response[:cdc] = target.children.
@@ -345,6 +347,16 @@ module ElFinder
         @response[:error] = 'Access Denied'
       end
     end # of read
+
+    # TODO: Test to if this functions as expected.
+    def _file
+      target ||= @target
+
+      if target && target.file?
+        @response[:target_path] = target.path.to_s
+      end
+
+    end
 
     #
     def _edit
